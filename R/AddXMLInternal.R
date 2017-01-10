@@ -8,46 +8,46 @@
 #}
 
 ## Annotating title elements
-.AddXMLAddTitle = function(root, title="") {
+.AddXMLAddTitle = function(root, title="", longTitle = paste("Title:", title)) {
     annotation = .AddXMLAddAnnotation(root, position=1, .AddXMLmakeId("main", "1.1"), kind="active")
-    XML::addAttributes(annotation$root, speech=paste("Title", title), type="Title")
+    XML::addAttributes(annotation$root, speech=paste("Title:", title), speech2=longTitle, type="Title")
     return(invisible(annotation))
 }
 
 ## Annotating axes
 ##
 ## Generic axis annotation function.
-.AddXMLAddAxis = function(root, values, label, groupPosition, name, groupId, labelId, lineId) {
+.AddXMLAddAxis = function(root, values, label, groupPosition, name, groupId, labelId, lineId, ...) {
     position = 0
     labelNode = .AddXMLAxisLabel(root, label=label, position=position <- position + 1,
                      id=labelId, axis=groupId)
     lineNode = .AddXMLAxisLine(root, id=lineId, axis=groupId)
     tickNodes = .AddXMLAxisValues(root, values=values,
-                              position=position <- position + 1, id=lineId, axis=groupId)
+                              position=position <- position + 1, id=lineId, axis=groupId, ...)
     annotations = c(list(labelNode, lineNode), tickNodes)
     .AddXMLAxisGroup(root, groupId, name, values=values, label=label,
-                     annotations=annotations, position=groupPosition)
+                     annotations=annotations, position=groupPosition, ...)
 }
 
 ## Parameterisation for x-axis
-.AddXMLAddXAxis = function(root, values=NULL, label="", groupPosition=2) {
-    .AddXMLAddAxis(root, values, label, groupPosition, "x axis", "xaxis", "xlab", "bottom")
+.AddXMLAddXAxis = function(root, values=NULL, label="", groupPosition=2, ...) {
+    .AddXMLAddAxis(root, values, label, groupPosition, "x axis:", "xaxis", "xlab", "bottom", ...)
 }
 
 ## Parameterisation for y-axis
-.AddXMLAddYAxis = function(root, values=NULL, label="", groupPosition=3) {
-    .AddXMLAddAxis(root, values, label, groupPosition, "y axis", "yaxis", "ylab", "left")
+.AddXMLAddYAxis = function(root, values=NULL, label="", groupPosition=3, ...) {
+    .AddXMLAddAxis(root, values, label, groupPosition, "y axis:", "yaxis", "ylab", "left", ...)
 }
 
 
 ## Aux method for axis group
-.AddXMLAxisGroup = function(root, id, name, values=NULL, label="", annotations=NULL, position=1) {
+.AddXMLAxisGroup = function(root, id, name, values=NULL, label="", annotations=NULL, position=1, speechShort=paste(name, label), speechLong=paste(name, label, "with values from", values[1], "to", values[length(values)]), ...) {
     annotation = .AddXMLAddAnnotation(root, position=position, id=id, kind="grouped")
     .AddXMLAddComponents(annotation, annotations)
     .AddXMLAddChildren(annotation, annotations)
     .AddXMLAddParents(annotation, annotations)
-    XML::addAttributes(annotation$root, speech=paste(name, label),
-                       speech2=paste(name, label, "with values from", values[1], "to", values[length(values)]),
+    XML::addAttributes(annotation$root, speech=speechShort,
+                       speech2=speechLong,
                        type="Axis")
     return(invisible(annotation))
 }
@@ -56,10 +56,10 @@
 ## Aux methods for axes annotation.
 ##
 ## Axis labelling
-.AddXMLAxisLabel = function(root, label="", position=1, id="", axis="") {
+.AddXMLAxisLabel = function(root, label="", position=1, id="", axis="", speechShort=paste("Label", label), speechLong=speechShort) {
     annotation = .AddXMLAddAnnotation(root, position=position,
                                       id=.AddXMLmakeId(id, "1.1"), kind="active")
-    XML::addAttributes(annotation$root, speech=paste("Label", label), type="Label")
+    XML::addAttributes(annotation$root, speech=speechShort, speech2=speechLong, type="Label")
     return(invisible(annotation))
 }
 
@@ -68,17 +68,17 @@
     annotation = .AddXMLAddAnnotation(root, position=position,
                                       id=.AddXMLmakeId(id, "axis", "line", "1.1"), kind="passive")
     XML::addAttributes(annotation$root, type="Line")
-    annotation
+    return(invisible(annotation))
 }
 
 ## Axis values and ticks
-.AddXMLAxisValues = function(root, values=NULL, position=1, id="", axis="") {
+.AddXMLAxisValues = function(root, values=NULL, detailedValues=values, position=1, id="", axis="", ...) {
     annotations <- list()
     for (i in 1:length(values)) {
         valueId = .AddXMLmakeId(id, "axis", "labels", paste("1.1", i, sep="."))
         value = .AddXMLAddAnnotation(root, position=position + i - 1,
                                      id=valueId, kind="active")
-        XML::addAttributes(value$root, speech=paste("Value", values[i]), type="Value")
+        XML::addAttributes(value$root, speech=paste("Tick mark", values[i]), speech2=detailedValues[i], type="Value")
        
         tickId = .AddXMLmakeId(id, "axis", "ticks", paste("1.1", i, sep="."))
         tick = .AddXMLAddAnnotation(root, id=tickId, kind="passive")
@@ -92,16 +92,16 @@
 }
 
 ## Constructs the center of the histogram 
-.AddXMLAddHistogramCenter = function(root, mids=NULL, counts=NULL, density=NULL, breaks=NULL) {
+.AddXMLAddHistogramCenter = function(root, hist=NULL, mids=NULL, counts=NULL, density=NULL, breaks=NULL) {
     annotation = .AddXMLAddAnnotation(root, position=4, id="center", kind="grouped")
     XML::addAttributes(annotation$root, speech="Histogram bars",
-                       speech2=paste("Histogram with", length(mids), "bars"),
+                       speech2=paste("Histogram with", length(hist$mids), "bars"),
                        type="Center")
     annotations <- list()
-    for (i in 1:length(mids)) {
-        annotations[[i]] = .AddXMLcenterBar(root, position=i, mid=mids[i],
-                                            count=counts[i], density=density[i],
-                                            start=breaks[i], end=breaks[i + 1])
+    for (i in 1:length(hist$mids)) {
+        annotations[[i]] = .AddXMLcenterBar(root, position=i, mid=hist$mids[i],
+                                            count=hist$counts[i], density=hist$density[i],
+                                            start=hist$breaks[i], end=hist$breaks[i + 1])
     }
     .AddXMLAddComponents(annotation, annotations)
     .AddXMLAddChildren(annotation, annotations)
@@ -117,7 +117,7 @@
     XML::addAttributes(annotation$root,
                        speech=paste("Bar", position, "at", mid, "with value", count),
                        speech2=paste("Bar", position, "between x values", start,
-                                     "and", end, " with y value", count, "and density", density),
+                                     "and", end, " with y value", count, "and density", round(density,3)),
                        type="Bar")
     return(invisible(annotation))
 }
