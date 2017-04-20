@@ -86,16 +86,17 @@ SVGThis.dotplot =
 
 SVGThis.eulerr = 
     function(x, file = "test.svg") {
+      x=Augment(x)
       X = stats::coef(x)[, 1L]
       Y = stats::coef(x)[, 2L]
       R = stats::coef(x)[, 3L]
-      Labels = dimnames(x$coefficients)[[1]]
+      Labels = rownames(x$coefficients)
+      TextX = x$TextPositions$x
+      TextY = x$TextPositions$y
 
-      TheDiagram = viewport(x=1, y=1, w=unit(6, "inches"), h=unit(6, "inches"))
-      grid.show.viewport(TheDiagram)
-      grid.circle(x = X, y = Y, r = R, name="VennCircle", vp=TheDiagram)
-      grid.text(label = Labels, x = X, y = Y, name="VennCircleLabel", vp=TheDiagram)
-      # control of the names meets one key concern identified in Dublin.
+      pushViewport(dataViewport(c(X-R, X+R), c(Y-R, Y+R))) 
+      grid.circle(X, Y, R, default.units="native", name="VennCircles") 
+      grid.text(Labels, TextX, TextY, default.units="native",           name="VennLabels")
 
       gridSVG::grid.export(name = file)
       dev.off()
@@ -106,8 +107,8 @@ SVGThis.eulerr =
 
 SVGThis.ggplot =
     function(x, file = "test.svg") {
+      x=Augment(x)
       x
-
       gridSVG::grid.export(name = file)
       dev.off()
       MakeTigerReady(svgfile = file)
@@ -156,7 +157,7 @@ SVGThis.histogram =
 }
 
 SVGThis.tsplot = function(x, file = "test.svg") {
-      x  # ensure we create a plot on a new graphics device
+      suppressWarnings(do.call(plot, x))  # ensure we create a plot on a new graphics device
       gridGraphics::grid.echo()  # plot() uses graphics package
       gridSVG::grid.export(name = file)
       dev.off()  # remove our graph window

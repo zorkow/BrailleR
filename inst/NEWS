@@ -1,17 +1,24 @@
+# v0.25.7
+- implemented the ViewSVG() so that anyone can use the interactive graph viewing system; required various internal functions to move and write necessary files 
+
+# v0.25.6
+- working on accessible Venn diagrams and time series plots
+- working on accessibility for scatter plots
+- fixed VI() method to handle additional arguments, although they are currently ignored.
+- created function to choose long and short text for a boxplot; previously embedded in VI.boxplot()
+
 # v0.25.5
 - Added experimental work on making accessible graphs for mounting on the web
 - added Volker Sorge and Donal Fitzpatrick to the package contributors list
 - added MakeAccessibleSVG() and AddXML() as well as a bunch of internal functions to do the hard work.
 - added Augment() method to take the functionality out of VI() that adds the content that feeds into the text descriptions because it will get used in other processes from here on.
 - changes from VS merged via GitHub
-- version number will be updated once Jonathan's example of an accessible histogram and time series plot are done
-
 
 # v0.25.4
 - added JooYoung Seo and TK Lee to the package contributors list
 - updated WriteR.pyw
 - fixed small typos
-- added MakeSLidy() which takesa folder of Rmd files and turns them into a slidy presentation
+- added MakeSlidy() which takes a folder of Rmd files and turns them into a slidy presentation
 
 # v0.25.3
 - WriteR() failed for JYS. Suggestion to use file.path() from HB added to WriteR(). Proved insufficient so hard wired quote marks for command line being issued have been included. JYS reported success.

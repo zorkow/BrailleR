@@ -92,7 +92,7 @@
 }
 
 ## Constructs the center of the histogram 
-.AddXMLAddHistogramCenter = function(root, hist=NULL, mids=NULL, counts=NULL, density=NULL, breaks=NULL) {
+.AddXMLAddHistogramCenter = function(root, hist=NULL) {
     annotation = .AddXMLAddAnnotation(root, position=4, id="center", kind="grouped")
     XML::addAttributes(annotation$root, speech="Histogram bars",
                        speech2=paste("Histogram with", length(hist$mids), "bars"),
@@ -117,7 +117,7 @@
     XML::addAttributes(annotation$root,
                        speech=paste("Bar", position, "at", mid, "with value", count),
                        speech2=paste("Bar", position, "between x values", start,
-                                     "and", end, " with y value", count, "and density", round(density,3)),
+                                     "and", end, " with y value", count, "and density", signif(density,3)),
                        type="Bar")
     return(invisible(annotation))
 }

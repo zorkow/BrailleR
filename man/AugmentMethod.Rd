@@ -4,8 +4,10 @@
 \alias{Augment.Augmented}
 \alias{Augment.boxplot}
 \alias{Augment.dotplot}
+\alias{Augment.eulerr}
 \alias{Augment.ggplot}
 \alias{Augment.histogram}
+\alias{Augment.scatterplot}
 \alias{Augment.tsplot}
 \alias{.Augment}
 \alias{.AugmentGrid}

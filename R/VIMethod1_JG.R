@@ -1,10 +1,10 @@
 
-VI = function(x) {
+VI = function(x, ...) {
        UseMethod("VI")
      }
 
 VI.default =
-    function(x) {
+    function(x, ...) {
       message("There is no specific method written for  this type of object.\n")
       message("You might try to use the print() function on the object or the str() command to investigate its contents.\n")
       print(x)
@@ -13,7 +13,7 @@ VI.default =
 
 
 VI.boxplot =
-    function(x) {
+    function(x, ...) {
 x=Augment(x)
       cat(paste0(
               'This graph has ', x$Boxplots, ' printed ', x$VertHorz,
@@ -24,9 +24,9 @@ x=Augment(x)
               ifelse(length(x$ylab) > 0, paste0('"', x$ylab, '"'), 'No label'),
               ' appears on the y-axis.\n'))
       if (x$horizontal) {
-        cat("Tick marks for the x-axis are at:", GetAxisTicks(x$xaxp), "\n")
+        cat("Tick marks for the x-axis are at:", .GetAxisTicks(x$xaxp), "\n")
       } else {
-        cat("Tick marks for the y-axis are at:", GetAxisTicks(x$yaxp), "\n")
+        cat("Tick marks for the y-axis are at:", .GetAxisTicks(x$yaxp), "\n")
       }
       for (i in 1:x$NBox) {
         cat(x$VarGroupUpp, x$names[i], 'has', x$n[i], 'values.\n')
@@ -69,7 +69,7 @@ VI.data.frame =
     }
 
 VI.dotplot =
-    function(x) {
+    function(x, ...) {
       MinVal = min(unlist(x$vals))
       MaxVal = max(unlist(x$vals))
       Bins = getOption("BrailleR.DotplotBins")
@@ -88,9 +88,9 @@ VI.dotplot =
                           'No label'), ' appears on the y-axis.\n'))
       }
       if (x$vertical) {
-        cat("Tick marks for the y-axis are at:", GetAxisTicks(x$yaxp), "\n")
+        cat("Tick marks for the y-axis are at:", .GetAxisTicks(x$yaxp), "\n")
       } else {
-        cat("Tick marks for the x-axis are at:", GetAxisTicks(x$xaxp), "\n")
+        cat("Tick marks for the x-axis are at:", .GetAxisTicks(x$xaxp), "\n")
       }
       cat(paste("the data that range from", MinVal, "to", MaxVal,
                 "has been broken into", Bins, "bins.\nThe counts are:\n"))
@@ -104,15 +104,15 @@ VI.dotplot =
 
 
 VI.histogram =
-    function(x) {
+    function(x, ...) {
       cat(paste0('This is a histogram, with the title: ',
           ifelse(length(x$main) > 0, x$main, paste("Histogram of", x$xname)),
           '\n', ifelse(length(x$xlab) > 0, InQuotes(x$xlab), InQuotes(x$xname)),
           ' is marked on the x-axis.\n'))
-      cat("Tick marks for the x-axis are at:", GetAxisTicks(x$xaxp), "\n")
+      cat("Tick marks for the x-axis are at:", .GetAxisTicks(x$xaxp), "\n")
       cat('There are a total of', sum(x$counts),
           'elements for this variable.\n')
-      cat("Tick marks for the y-axis are at:", GetAxisTicks(x$yaxp), "\n")
+      cat("Tick marks for the y-axis are at:", .GetAxisTicks(x$yaxp), "\n")
       NoBins = length(x$breaks) - 1
       if (x$equidist) {
         cat('It has', NoBins, 'bins with equal widths, starting at',
@@ -132,14 +132,14 @@ VI.histogram =
 
 
 VI.list =
-    function(x) {
+    function(x, ...) {
       cat("No VI method has yet been written for this type of object so it has been printed for you in its entirety.\n")
       print(x)
     }
 
 
 VI.lm =
-    function(x) {
+    function(x, ...) {
       ModelName <- match.call(expand.dots = FALSE)$x
       FolderName = paste0(ModelName, ".Validity")
       RmdName = paste0(FolderName, ".Rmd")
@@ -230,3 +230,7 @@ VI.matrix = function(x, ...) {
               VI(as.data.frame.matrix(x), ...)
             }
 
+VI.tsplot =
+    function(x, ...) {
+      x
+    }

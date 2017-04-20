@@ -11,6 +11,7 @@
 \alias{VI.lm}
 \alias{VI.matrix}
 \alias{VI.summary.lm}
+\alias{VI.tsplot}
 \alias{VI.TukeyHSD}
 \title{
 Methods to help vision impaired users
@@ -21,16 +22,17 @@ A set of methods that extract the most relevant information from a graphical obj
 The method includes representations of summary methods that are more suitable for blind users. For example, the method for a data.frame uses a single line for each variable instead of the normal column layout used by the \code{summary} method.
 }
 \usage{
-VI(x)
+VI(x, ...)
 
-\method{VI}{histogram}(x)
+\method{VI}{histogram}(x, ...)
 
-\method{VI}{aov}(x)
+\method{VI}{aov}(x, ...)
 
-\method{VI}{lm}(x)
+\method{VI}{lm}(x, ...)
 }
 \arguments{
   \item{x}{any \R object}
+\item{...}{other arguments, currently ignored}
 }
 \details{
 This is the general help page for the VI() functionality. Specific help pages will be created if the ability to alter the outcome through user input warrants. See below for more detail on these.
@@ -60,4 +62,3 @@ VI(PlottedFig)
 rm(PlottedFig)
 }
 \keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

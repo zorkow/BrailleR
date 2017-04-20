@@ -1,3 +1,4 @@
+
 Augment = function(x) {
             UseMethod("Augment")
           }
@@ -40,6 +41,17 @@ Augment.dotplot = function(x) {
 return(invisible(x))
 }
 
+Augment.eulerr = 
+    function(x) {
+      X <- x[["coefficients"]][, 1L]
+      Y <- x[["coefficients"]][, 2L]
+      r <- x[["coefficients"]][, 3L]
+
+x$TextPositions=list(x=X, y=Y)
+      return(invisible(x))
+    }
+
+
 Augment.ggplot = function(x) {
 return(invisible(x))
 }
@@ -54,11 +66,55 @@ Augment.histogram = function(x) {
 return(invisible(x))
 }
 
-Augment.tsplot = function(x) {
-    x$xlab <- if (is.null(x$xlab)) {"Time"} else {x$xlab}
-    x=.AugmentBase(x)
-return(invisible(x))
-}
+Augment.scatterplot = 
+    function(x) {
+      x=.AugmentBase(x)
+
+      VLength = nrow(x$data)
+NBreaks= 6 #specified as something from 6 to 10 depending on how many obs there are.
+      Breaks = round(seq(0, VLength, length.out= NBreaks+1),0)
+      BinEnds =Breaks[-1]
+      BinStarts = Breaks[-(NBreaks+1)] + 1 # not overlapping
+      POI = list(MeanX=0, MedianX=0, MinX=0, MaxX=0, SDX=0, MeanY=0, MedianY=0, MinY=0, MaxY=0, SDY=0, CorXY=0, N=0) # and whatever else we like
+      for(i in 1:NBreaks){
+        POI$MeanX[i] = mean(x$data[BinStarts[i]:BinEnds[i], "x"])
+        POI$MeanY[i] = mean(x$data[BinStarts[i]:BinEnds[i], "y"])
+        POI$MedianX[i] = median(x$data[BinStarts[i]:BinEnds[i], "x"])
+        POI$MedianY[i] = median(x$data[BinStarts[i]:BinEnds[i], "y"])
+        POI$MinX[i] = min(x$data[BinStarts[i]:BinEnds[i], "x"])
+        POI$MinY[i] = min(x$data[BinStarts[i]:BinEnds[i], "y"])
+        POI$MaxX[i] = max(x$data[BinStarts[i]:BinEnds[i], "x"])
+        POI$MaxY[i] = max(x$data[BinStarts[i]:BinEnds[i], "y"])
+        POI$SDX[i] = sd(x$data[BinStarts[i]:BinEnds[i], "x"])
+        POI$SDY[i] = sd(x$data[BinStarts[i]:BinEnds[i], "y"])
+        POI$N[i] = nrow(x$data[BinStarts[i]:BinEnds[i], ])
+        POI$CorXY[i] = cor(x$data[BinStarts[i]:BinEnds[i], "x"], x$data[BinStarts[i]:BinEnds[i], "y"])
+      }
+      x$GroupSummaries = POI
+      return(invisible(x))
+    }
+
+Augment.tsplot = 
+    function(x) {
+      x$xlab <- if (is.null(x$xlab)) {"Time"} else {x$xlab}
+      x=.AugmentBase(x)
+      TheSeries = x[[1]]
+NBreaks= 10 #specified as something from 6 to 10 depending on how many obs there are.
+      VLength = length(TheSeries)
+      Breaks = round(seq(0, VLength, length.out= NBreaks+1),0)
+      BinEnds =Breaks[-1]
+      BinStarts = Breaks[-(NBreaks+1)] + 1 # not overlapping
+      POI = list(Mean=0, Median= 0, SD=0, N=0) # and whatever else we like
+      for(i in 1:NBreaks){
+        POI$Mean[i] = mean(TheSeries[BinStarts[i]:BinEnds[i]], na.rm=T)
+        POI$Median[i] = median(TheSeries[BinStarts[i]:BinEnds[i]], na.rm=T)
+        POI$SD[i] = sd(TheSeries[BinStarts[i]:BinEnds[i]], na.rm=T)
+        POI$N[i] = sum(!is.na(TheSeries[BinStarts[i]:BinEnds[i]]))
+      }
+      x$GroupSummaries = POI
+      return(invisible(x))
+    }
+
 
 .AugmentBase = function(x){
       x$xaxp = par()$xaxp
@@ -76,6 +132,6 @@ return(invisible(x))
 .AugmentedGrid = function(x){
 # x$xTicks = seq(x$xaxp[1], x$xaxp[2], length.out=x$xaxp[3]+1)
 # x$yTicks = seq(x$yaxp[1], x$yaxp[2], length.out=x$yaxp[3]+1)
-# class(x)=c("Augmented", class(x))
+ class(x)=c("Augmented", class(x))
 return(invisible(x))
 }
