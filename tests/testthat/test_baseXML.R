@@ -13,6 +13,10 @@ expect_doc_equal <- function(a, b) {
   comp <- XML::compareXMLDocs(a, b)
   expect_equal(length(comp$inA), 0)
   expect_equal(length(comp$inB), 0)
+  ## print(XML::toString.XMLNode(a))
+  ## print(XML::toString.XMLNode(b))
+  expect_equal(XML::toString.XMLNode(a),
+               XML::toString.XMLNode(b))
 }
 
 test_that('document', {
@@ -37,19 +41,19 @@ test_that('document', {
 
 test_that('boxplot', {
   xml <- XML::xmlParseDoc('../resources/boxplot.xml')
-  chart <- AddXML(boxplot(Ozone~Month,data=airquality, main='Boxplots for Ozone',xlab='Months',ylab='Ozone'))
+  chart <- AddXML(boxplot(Ozone~Month, data=airquality, main='Boxplots for Ozone',xlab='Months',ylab='Ozone'))
   expect_doc_equal(xml, chart)
 })
 
 test_that('boxplot_horizontal', {
   xml <- XML::xmlParseDoc('../resources/boxplot_horiz.xml')
-  chart <- AddXML(boxplot(Ozone~Month,data=airquality, main='Boxplots for Ozone',xlab='Months',ylab='Ozone'))
+  chart <- AddXML(boxplot(Ozone~Month, data=airquality, main='Boxplots for Ozone',ylab='Months',xlab='Ozone',horizontal=TRUE))
   expect_doc_equal(xml, chart)
 })
 
 test_that('timeseries_disc', {
   xml <- XML::xmlParseDoc('../resources/timeseries_disc.xml')
-  chart <- AddXML(TimeSeriesPlot(Ozone, main="Timeseries of Ozone"))
+  chart <- AddXML(TimeSeriesPlot(airquality$Ozone, main="Timeseries of Ozone", ylab="Ozone"))
   expect_doc_equal(xml, chart)
 })
 
@@ -61,7 +65,7 @@ test_that('timeseries_cont', {
 
 test_that('histogram', {
   xml <- XML::xmlParseDoc('../resources/histogram.xml')
-  chart <- AddXML(BrailleR::hist(Ozone, main="Histogram of Ozone"))
+  chart <- AddXML(hist(airquality$Ozone, main="Histogram of Ozone", xlab="Ozone"))
   expect_doc_equal(xml, chart)
 })
 

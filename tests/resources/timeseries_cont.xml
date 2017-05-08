@@ -154,7 +154,7 @@
       </sre:component>
       <sre:neighbours/>
     </sre:annotation>
-    <sre:annotation speech="Label $" speech2="Label $" type="Label">
+    <sre:annotation speech="Label Temperature" speech2="Label Temperature" type="Label">
       <sre:active>graphics-plot-1-ylab-1.1</sre:active>
       <sre:position>1</sre:position>
       <sre:parents>
@@ -270,7 +270,7 @@
       </sre:component>
       <sre:neighbours/>
     </sre:annotation>
-    <sre:annotation speech="y axis: $" speech2="y axis $ ranges from 60 to 90" type="Axis">
+    <sre:annotation speech="y axis: Temperature" speech2="y axis Temperature ranges from 60 to 90" type="Axis">
       <sre:grouped>yaxis</sre:grouped>
       <sre:position>3</sre:position>
       <sre:parents>
@@ -440,7 +440,7 @@
       <sre:component/>
       <sre:neighbours/>
     </sre:annotation>
-    <sre:annotation speech="Time series plot of $" speech2="Time series plot showing  $ over the range 60 to 90 for $ which ranges from 0 to 150" type="TimeSeriesPlot">
+    <sre:annotation speech="Time series plot of Temperature" speech2="Time series plot showing  Temperature over the range 60 to 90 for Temperature which ranges from 0 to 150" type="TimeSeriesPlot">
       <sre:grouped>chart</sre:grouped>
       <sre:position>1</sre:position>
       <sre:parents/>
