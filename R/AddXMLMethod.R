@@ -1,13 +1,13 @@
-AddXML = function(x, file) {
+AddXML = function(x, ...) {
             UseMethod("AddXML")
           }
 
 AddXML.default =
-    function(x, file) {
+    function(x, ...) {
 return(invisible("nothing done"))
 }
 
-AddXML.boxplot = function(x, file) {
+AddXML.boxplot = function(x, ...) {
     doc = .AddXMLDocument("boxplot")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
@@ -45,42 +45,38 @@ AddXML.boxplot = function(x, file) {
                     speech2=paste(x$Boxplots, "for", x$xlab, paste(x$names, collapse=", ")),
                     children=list(title, xAxis, yAxis, center))
     .AddXMLAddComponents(chart, list(title, xAxis, yAxis, center))
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }
 
 
-AddXML.dotplot = function(x, file) {
+AddXML.dotplot = function(x, ...) {
     doc = .AddXMLDocument("dotplot")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
     .AddXMLAddXAxis(annotations, label=x$xlab)
     .AddXMLAddYAxis(annotations, label=x$ylab)
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }
 
 
-AddXML.eulerr = function(x, file) {
+AddXML.eulerr = function(x, ...) {
     doc = .AddXMLDocument("eulerr")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }
 
-AddXML.ggplot = function(x, file) {
+AddXML.ggplot = function(x, ...) {
     doc = .AddXMLDocument("ggplot")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
     .AddXMLAddXAxis(annotations, label=x$xlab)
     .AddXMLAddYAxis(annotations, label=x$ylab)
 
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }
 
-AddXML.histogram = function(x, file) {
+AddXML.histogram = function(x, ...) {
     doc = .AddXMLDocument("histogram")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
@@ -115,11 +111,10 @@ AddXML.histogram = function(x, file) {
                     children=list(title, xAxis, yAxis, center))
     .AddXMLAddComponents(chart, list(title, xAxis, yAxis, center))
 
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }
 
-AddXML.tsplot = function(x, file) {
+AddXML.tsplot = function(x, ...) {
     doc = .AddXMLDocument("timeseriesplot")
     root = XML::xmlRoot(doc)
     annotations = .AddXMLAddNode(root, "annotations")
@@ -152,7 +147,5 @@ AddXML.tsplot = function(x, file) {
                                   "which ranges from", XMin,  "to", XMax), 
                     children=list(title, xAxis, yAxis, center))
     .AddXMLAddComponents(chart, list(title, xAxis, yAxis, center))
-
-    XML::saveXML(doc=doc, file=file)
-    return(invisible(NULL))
+    return(invisible(doc))
 }

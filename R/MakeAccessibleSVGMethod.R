@@ -6,7 +6,8 @@ MakeAccessibleSVG = function(x, file = "test", view=interactive(), ...) {
 MakeAccessibleSVG.default =
     function(x, file = "test", view=interactive(), ...) {
       svgfile = SVGThis(x, paste0(file, ".svg"))
-      xmlfile = AddXML(x, paste0(file, ".xml"))
+      xml = AddXML(x)
+      XML::saveXML(doc=xml, file=paste0(file, ".xml"))
       if (view) {
           BrowseSVG(file=file, view=view, ...)
       }
@@ -17,7 +18,8 @@ MakeAccessibleSVG.default =
 MakeAccessibleSVG.histogram =
     function(x, file = "test", view=interactive(), ...) {
       svgfile = SVGThis(x, paste0(file, ".svg"))
-      xmlfile = AddXML(x, paste0(file, ".xml"))
+      xml = AddXML(x)
+      XML::saveXML(doc=xml, file=paste0(file, ".xml"))
       if (view) {
           BrowseSVG(file=file, view=view, ...)
       }
@@ -31,7 +33,8 @@ MakeAccessibleSVG.tsplot =
       if (x$Continuous) {
         .RewriteSVG.tsplot(x, paste0(file, ".svg"))
       }
-      xmlfile = AddXML(x, paste0(file, ".xml"))
+      xml = AddXML(x)
+      XML::saveXML(doc=xml, file=paste0(file, ".xml"))
       if (view) {
           BrowseSVG(file=file, view=view, ...)
       }

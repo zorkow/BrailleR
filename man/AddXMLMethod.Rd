@@ -11,11 +11,11 @@
 \title{Create XML files to sit alongside SVG files in order to make an accessible graph experience.}
 \description{Creates the necessary XML file for a graph object (as long as it has a class assigned) or the current graph window.}
 \usage{
-AddXML(x, file)
+AddXML(x, ...)
 }
 \arguments{
   \item{x}{a graph object for which a method exists, or the current graphics device if set to NULL.}
-  \item{file}{The XML file to be created.}
+  \item{...}{rest parameters to control plot output.}
 }
 \details{
 This is experimental work. At present, the proof of concept is based ona fairly standard histogram from the \pkg{graphics} package.

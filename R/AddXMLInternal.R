@@ -248,11 +248,14 @@
            type="Center")
   }
   annotations <- list()
+  visible <- 0
   for (i in 1:len) {
-    annotations[[i]] = .AddXMLtimeseriesSegment(
-      root, position=i, mean=gs$Mean[i], median=gs$Median[i], sd=gs$SD[i], n=gs$N[i])
+    if (gs$N[i] == 1) next
+    visible <- visible + 1
+    annotations[[visible]] = .AddXMLtimeseriesSegment(
+      root, position=visible, mean=gs$Mean[i], median=gs$Median[i], sd=gs$SD[i], n=gs$N[i])
   }
-  annotations[[i + 1]] = .AddXMLAddAnnotation(
+  annotations[[visible + 1]] = .AddXMLAddAnnotation(
     root, position=0, id=.AddXMLmakeId("box", "1.1.1"), kind="passive")
   .AddXMLAddComponents(annotation, annotations)
   .AddXMLAddChildren(annotation, annotations)
