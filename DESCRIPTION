@@ -50,6 +50,7 @@ Imports:
     XML,
     xtable
 Suggests:
+    installr,
     testthat
 SystemRequirements: Python 2.7 and wxPython 2.8
 VignetteBuilder: knitr
