@@ -32,12 +32,12 @@
 }
 
 ## Parameterisation for x-axis
-.AddXMLAddXAxis = function(root, values=NULL, label="", groupPosition=2, ...) {
+.AddXMLAddXAxis = function(root, values=NULL, label="", groupPosition=3, ...) {
   .AddXMLAddAxis(root, values, label, groupPosition, "x axis:", "xaxis", "xlab", "bottom", ...)
 }
 
 ## Parameterisation for y-axis
-.AddXMLAddYAxis = function(root, values=NULL, label="", groupPosition=3, ...) {
+.AddXMLAddYAxis = function(root, values=NULL, label="", groupPosition=4, ...) {
     .AddXMLAddAxis(root, values, label, groupPosition, "y axis:", "yaxis", "ylab", "left", ...)
 }
 
@@ -100,7 +100,7 @@
 
 ## Constructs the center of the histogram 
 .AddXMLAddHistogramCenter = function(root, hist=NULL) {
-    annotation = .AddXMLAddAnnotation(root, position=4, id="center", kind="grouped")
+    annotation = .AddXMLAddAnnotation(root, position=2, id="center", kind="grouped")
     XML::addAttributes(annotation$root, speech="Histogram bars",
                        speech2=paste("Histogram with", length(hist$mids), "bars"),
                        type="Center")
@@ -113,13 +113,15 @@
     .AddXMLAddComponents(annotation, annotations)
     .AddXMLAddChildren(annotation, annotations)
     .AddXMLAddParents(annotation, annotations)
+    .AddXMLAddSonification(annotation, annotations, "max")
     return(invisible(annotation))
 }
+
 
 ## Constructs a ggplot layer
 ## TODO:  Currently assumes histogram or line (and probably plenty of other assumptions)
 .AddXMLAddGGPlotLayer = function(root, x=NULL, panel=1) {
-  annotation = .AddXMLAddAnnotation(root, position=4, 
+  annotation = .AddXMLAddAnnotation(root, position=2, 
                                     id=paste("center", panel, x$layernum, sep="-"), kind="grouped")
   # TODO:  For all layer types:  need heuristic to avoid trying to describe
   # individual data points if there are thousands of them
@@ -242,6 +244,7 @@
                 element = element,
                 position = .AddXMLAddNode(annotation, "position", content=position),
                 parents = .AddXMLAddNode(annotation, "parents"),
+                sonification = .AddXMLAddNode(annotation, "sonification"),
                 children = .AddXMLAddNode(annotation, "children"),
                 component = .AddXMLAddNode(annotation, "component"),
                 neighbours = .AddXMLAddNode(annotation, "neighbours"))
@@ -305,6 +308,14 @@
 }
 
 
+## Add sonification elements to annotations
+.AddXMLAddSonification = function(parent, nodes, measure) {
+  print(length(nodes))
+  clone <- function(x) XML::addAttributes(.AddXMLclone(parent$sonification, x$element), measure=measure)
+    lapply(nodes, clone)
+}
+
+
 ## Store components for top level Element
 # moved into the XML.histogram()
 #  assign(".AddXMLcomponents",list(), envir=BrailleR)
@@ -334,7 +345,7 @@
 
 ## Constructs the center of the timeseries
 .AddXMLAddTimeseriesCenter = function(root, ts=NULL) {
-  annotation = .AddXMLAddAnnotation(root, position=4, id="center", kind="grouped")
+  annotation = .AddXMLAddAnnotation(root, position=2, id="center", kind="grouped")
   gs = ts$GroupSummaries
   len = length(gs$N)
   if (ts$Continuous) {
@@ -359,8 +370,10 @@
   .AddXMLAddComponents(annotation, annotations)
   .AddXMLAddChildren(annotation, annotations)
   .AddXMLAddParents(annotation, annotations)
+  .AddXMLAddSonification(annotation, head(annotations, -1), "all")
   return(invisible(annotation))
 }
+
 
 
 .AddXMLtimeseriesSegment =
@@ -377,13 +390,14 @@
     XML::addAttributes(annotation$root,
                        speech=paste("Segment", position, "with mean", signif(mean, 3)),
                        speech2=speech2, type="Segment")
+    .AddXMLAddSonification(annotation, list(annotation), "all")
     return(invisible(annotation))
   }
 
 
 ## Constructs the center of the histogram 
 .AddXMLAddBoxplotCenter = function(root, boxplot=NULL) {
-  annotation = .AddXMLAddAnnotation(root, position=4, id="center", kind="grouped")
+  annotation = .AddXMLAddAnnotation(root, position=2, id="center", kind="grouped")
   ##vs sort out grammar:
   ##    singular vs plural with $IsAre,
   ##    sequence with commata and "and"
